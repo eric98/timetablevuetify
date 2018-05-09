@@ -43,7 +43,7 @@
               </v-flex>
               <v-flex xs2 v-for="day in days" :key="day.id + '' + timeslot.id ">
                 <v-card>
-                  <v-card-text class="px-0" @drop="dropLesson($event, day, timeslot)" @dragover="allowDrop" v-html="content(day, timeslot )"></v-card-text>
+                  <v-card-text draggable="true" @dragstart="startDraggingQuitAvailableLesson($event,day,timeslot)" class="px-0" @drop="dropLesson($event, day, timeslot)" @dragover="allowDrop" v-html="content(day, timeslot )"></v-card-text>
                 </v-card>
               </v-flex>
             </template>
@@ -224,12 +224,14 @@
       dropLesson (e, day, timeslot) {
 //        console.log(e)
         const lesson = JSON.parse(e.dataTransfer.getData('lesson'))
-//        console.log('Lesson is:', lesson)
+        console.log('Lesson is:', lesson)
 //        console.log('Lesson name:', lesson.name)
 //        console.log('Lesson id:', lesson.id)
 //        console.log('Lesson By id:', this.getLessonById(lesson.id))
-        // Remove lesson from available availableLessons:
-        this.availableLessons.splice(this.availableLessons.indexOf(this.getLessonById(lesson.id)), 1)
+        if (e.dataTransfer.getData('newLessonAtTimetable')) {
+          // Remove lesson from available availableLessons:
+          this.availableLessons.splice(this.availableLessons.indexOf(this.getLessonById(lesson.id)), 1)
+        }
 //        console.log('DAY:')
 //        console.log(day)
 //        console.log(day.id)
@@ -254,6 +256,16 @@
 //        console.log(e)
         e.dataTransfer.effectAllowed = 'move'
         e.dataTransfer.setData('lesson', JSON.stringify(lesson))
+        e.dataTransfer.setData('newLessonAtTimetable', true)
+      },
+      startDraggingQuitAvailableLesson (e, day, timeslot) {
+        var lesson = this.lessons.find(function (lesson) {
+          return lesson.day === day.id && lesson.timeslot_id === timeslot.id
+        })
+        console.log(lesson)
+        e.dataTransfer.effectAllowed = 'move'
+        e.dataTransfer.setData('lesson', JSON.stringify(lesson))
+//        lesson.day = ''
       }
     }
   }
