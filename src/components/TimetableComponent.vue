@@ -154,7 +154,6 @@
         ],
         lessons: [
           {
-            'id': 1,
             'name': 'UF1',
             'day': 1,
             'timeslot_id': 7
@@ -238,6 +237,19 @@
 //        console.log(e)
         const lesson = JSON.parse(e.dataTransfer.getData('lesson'))
 //        console.log('Lesson is:', lesson)
+        const oldLesson = this.lessons.find(function (oldLesson) {
+          return oldLesson.day === day.id && oldLesson.timeslot_id === timeslot.id
+        })
+        if (oldLesson != null) {
+          const newLesson = {
+            'name': oldLesson.name,
+            'day': parseInt(lesson.day),
+            'timeslot_id': parseInt(lesson.timeslot_id)
+          }
+          this.lessons.splice(this.lessons.indexOf(oldLesson, 1))
+          this.lessons.push(newLesson)
+        }
+//        console.log('oldLesson is:', oldLesson)
 //        console.log('Lesson name:', lesson.name)
 //        console.log('Lesson id:', lesson.id)
 //        console.log('Lesson By id:', this.getLessonById(lesson.id))
