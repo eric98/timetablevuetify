@@ -243,21 +243,19 @@
         if (oldLesson != null) {
           var newLesson = null
           if (lesson.hasOwnProperty('day')) {
-//            console.log('canvi dins horari')
             newLesson = {
               'name': oldLesson.name,
               'day': parseInt(lesson.day),
               'timeslot_id': parseInt(lesson.timeslot_id)
             }
-            this.lessons.splice(this.lessons.indexOf(oldLesson, 1))
+            this.lessons.splice(this.lessons.indexOf(oldLesson), 1)
             this.lessons.push(newLesson)
           } else {
-//            console.log('canvi fora-dins horari')
             newLesson = {
               'id': this.newId(),
               'name': oldLesson.name
             }
-            this.lessons.splice(this.lessons.indexOf(oldLesson, 1))
+            this.lessons.splice(this.lessons.indexOf(oldLesson), 1)
             this.availableLessons.push(newLesson)
           }
         }
