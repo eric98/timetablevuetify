@@ -241,13 +241,20 @@
           return oldLesson.day === day.id && oldLesson.timeslot_id === timeslot.id
         })
         if (oldLesson != null) {
-          const newLesson = {
-            'name': oldLesson.name,
-            'day': parseInt(lesson.day),
-            'timeslot_id': parseInt(lesson.timeslot_id)
+          var newLesson = null
+          if (lesson.hasOwnProperty('day')) {
+            console.log('canvi dins horari')
+            newLesson = {
+              'name': oldLesson.name,
+              'day': parseInt(lesson.day),
+              'timeslot_id': parseInt(lesson.timeslot_id)
+            }
+            this.lessons.splice(this.lessons.indexOf(oldLesson, 1))
+            this.lessons.push(newLesson)
+          } else {
+            console.log('canvi fora-dins horari')
+            // TODO: canvi fora-dins horari
           }
-          this.lessons.splice(this.lessons.indexOf(oldLesson, 1))
-          this.lessons.push(newLesson)
         }
 //        console.log('oldLesson is:', oldLesson)
 //        console.log('Lesson name:', lesson.name)
