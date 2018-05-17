@@ -14,7 +14,7 @@
                 <v-card-text class="px-0">Available Dropzone</v-card-text>
               </v-card>
             </v-flex>
-            <v-flex xs12 v-for="lesson in availableLessons" :key="lesson.id">
+            <v-flex xs12 v-for="lesson in availableLessons" :key="lesson.id" @dragover="allowDrop" @drop="addAvailableLesson($event)">
               <v-card draggable="true" @dragstart="startDraggingAvailableLesson($event,lesson)">
                 <v-card-text class="px-0">{{lesson.name}}</v-card-text>
               </v-card>
@@ -197,6 +197,19 @@
       }
     },
     methods: {
+      newId () {
+        const lastLesson = this.availableLessons[this.availableLessons.length - 1]
+        return lastLesson.id + 1
+      },
+      addAvailableLesson (e) {
+        const lesson = JSON.parse(e.dataTransfer.getData('lesson'))
+//        console.log('lesson: ', lesson)
+        const newLesson = {
+          'id': this.newId(),
+          'name': lesson.name
+        }
+        this.availableLessons.push(newLesson)
+      },
       addLesson () {
         const newLesson = {
           'name': this.newLessonName,
@@ -228,10 +241,10 @@
 //        console.log('Lesson name:', lesson.name)
 //        console.log('Lesson id:', lesson.id)
 //        console.log('Lesson By id:', this.getLessonById(lesson.id))
-        if (e.dataTransfer.getData('newLessonAtTimetable')) {
-          // Remove lesson from available availableLessons:
-          this.availableLessons.splice(this.availableLessons.indexOf(this.getLessonById(lesson.id)), 1)
-        }
+//        if (e.dataTransfer.getData('newLessonAtTimetable')) {
+//          // Remove lesson from available availableLessons:
+//          this.availableLessons.splice(this.availableLessons.indexOf(this.getLessonById(lesson.id)), 1)
+//        }
 //        console.log('DAY:')
 //        console.log(day)
 //        console.log(day.id)
@@ -249,6 +262,7 @@
         })
       },
       startDraggingAvailableLesson (e, lesson) {
+        this.availableLessons.splice(this.availableLessons.indexOf(this.getLessonById(lesson.id)), 1)
 //        console.log('Starting drag lesson:')
 //        console.log(lesson.name)
 //        console.log(lesson)
@@ -262,10 +276,10 @@
         var lesson = this.lessons.find(function (lesson) {
           return lesson.day === day.id && lesson.timeslot_id === timeslot.id
         })
-        console.log(lesson)
+//        console.log(lesson)
+        this.lessons.splice(this.lessons.indexOf(lesson), 1)
         e.dataTransfer.effectAllowed = 'move'
         e.dataTransfer.setData('lesson', JSON.stringify(lesson))
-//        lesson.day = ''
       }
     }
   }
